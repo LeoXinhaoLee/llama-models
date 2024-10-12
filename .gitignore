@@ -2,3 +2,6 @@ __pycache__
 dist
 *.egg-info
 build
+.idea/
+.DS_Store
+*.sh

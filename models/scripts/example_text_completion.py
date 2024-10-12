@@ -14,6 +14,9 @@ from typing import Optional
 import fire
 from termcolor import cprint
 
+import pdb
+import torch
+
 from models.llama3.reference_impl.generation import Llama
 
 
@@ -29,6 +32,9 @@ def run_main(
     max_gen_len: int = 64,
     model_parallel_size: Optional[int] = None,
 ):
+
+    max_seq_len = 2048
+
     tokenizer_path = str(THIS_DIR.parent / "llama3/api/tokenizer.model")
     generator = Llama.build(
         ckpt_dir=ckpt_dir,
@@ -38,27 +44,32 @@ def run_main(
         model_parallel_size=model_parallel_size,
     )
 
-    prompts = [
-        "The color of the sky is blue but sometimes it can also be",
-        """\
-apple is pomme,
-bannana is banane,
-cherry is""",
-        "1, 2, 3, 5, 8, 13",
-        "ba ba black sheep, have you any wool?",
-    ]
-    for prompt in prompts:
-        result = generator.text_completion(
-            prompt,
-            temperature=0.6,
-            top_p=0.9,
-            max_gen_len=max_gen_len,
-            logprobs=False,
-        )
+#     prompts = [
+#         "The color of the sky is blue but sometimes it can also be",
+#         """\
+# apple is pomme,
+# bannana is banane,
+# cherry is""",
+#         "1, 2, 3, 5, 8, 13",
+#         "ba ba black sheep, have you any wool?",
+#     ]
+#     for prompt in prompts:
+#         result = generator.text_completion(
+#             prompt,
+#             temperature=0.6,
+#             top_p=0.9,
+#             max_gen_len=max_gen_len,
+#             logprobs=False,
+#         )
+#
+#         cprint(f"{prompt}", end="")
+#         cprint(f"{result.generation}", color="yellow")
+#         print("\n==================================\n")
 
-        cprint(f"{prompt}", end="")
-        cprint(f"{result.generation}", color="yellow")
-        print("\n==================================\n")
+    model = generator.model
+    batch = torch.load('/nlp/scr/yusun/data/karan/ttt-retro/batch.pth')
+    output = model(batch, start_pos=0)
+    pdb.set_trace()
 
 
 def main():
