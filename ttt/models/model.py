@@ -55,6 +55,7 @@ CONFIGS = {
         "seq_modeling_block": "self_attention",
         "use_rotary_emb": "sequence",
         "rope_theta": 5e5,
+        "use_scaled_rope": True,
         "bos_token_id": 128000,
         "eos_token_id": 128001,
     },
@@ -305,7 +306,8 @@ class Attention(nn.Module):
         self.resid_dropout = nn.Dropout(rate=config.resid_pdrop)
 
         self.freqs_cis = precompute_freqs_cis(
-            self.head_dim, config.max_sequence_length * 2, theta=config.rope_theta, dtype=self.dtype
+            self.head_dim, config.max_sequence_length * 2,
+            theta=config.rope_theta, dtype=self.dtype, use_scaled=config.use_scaled_rope
         )
 
     def _split_heads(self, hidden_states):
@@ -523,7 +525,6 @@ class Block(nn.Module):
                 position_ids,
                 deterministic,
                 init_cache,
-                output_attentions,
                 fcm_mask,
             )
         else:

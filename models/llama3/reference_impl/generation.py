@@ -134,10 +134,15 @@ class Llama:
         )
         tokenizer = Tokenizer(model_path=tokenizer_path)
         assert model_args.vocab_size == tokenizer.n_words
-        if torch.cuda.is_bf16_supported():
-            torch.set_default_tensor_type(torch.cuda.BFloat16Tensor)
-        else:
-            torch.set_default_tensor_type(torch.cuda.HalfTensor)
+
+        # if torch.cuda.is_bf16_supported():
+        #     torch.set_default_tensor_type(torch.cuda.BFloat16Tensor)
+        # else:
+        #     torch.set_default_tensor_type(torch.cuda.HalfTensor)
+
+        # @xinhao: matching use fp32
+        torch.set_default_tensor_type(torch.cuda.FloatTensor)
+
         if model_args.vision_chunk_size > 0:
             from .multimodal.model import CrossAttentionTransformer
 
