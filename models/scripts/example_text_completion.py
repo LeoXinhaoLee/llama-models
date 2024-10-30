@@ -67,7 +67,8 @@ def run_main(
 #         print("\n==================================\n")
 
     model = generator.model
-    batch = torch.load('/nlp/scr/yusun/data/karan/ttt-retro/batch.pth')
+    batch = torch.load('/nlp/scr/yusun/data/xinhao/retrofit/llama_weights/match_input.pth')  # [2, 2048] randint
+    batch = batch.cuda()
     output = model(batch, start_pos=0)
     pdb.set_trace()
 
